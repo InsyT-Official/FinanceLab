@@ -8,16 +8,25 @@ async function generatePDF(html) {
   let browser;
 
   try {
-    browser = await puppeteer.launch({
+    // Try launching with executable path first (for Render environment)
+    const launchOptions = {
       headless: true,
       defaultViewport: null,
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
         '--disable-gpu',
-        '--disable-dev-shm-usage'
+        '--disable-dev-shm-usage',
+        '--single-process=false'
       ]
-    });
+    };
+
+    // On Render, try to use system Chrome if available
+    if (process.env.NODE_ENV === 'production') {
+      launchOptions.executablePath = '/usr/bin/chromium-browser' || '/usr/bin/google-chrome';
+    }
+
+    browser = await puppeteer.launch(launchOptions);
 
     const page = await browser.newPage();
 
@@ -28,7 +37,7 @@ async function generatePDF(html) {
       waitUntil: ['load', 'domcontentloaded']
     });
 
-    // ✅ Version-safe wait (replaces page.waitForTimeout)
+    // Version-safe wait
     await sleep(1500);
 
     const pdf = await page.pdf({
@@ -44,17 +53,25 @@ async function generatePDF(html) {
       scale: 1.2
     });
 
+    if (browser) {
+      await browser.close();
+    }
+
     return pdf;
 
   } catch (error) {
-    throw new Error(`PDF Generation Error: ${error.message}`);
-
-  } finally {
     if (browser) {
       try {
         await browser.close();
       } catch (e) {}
     }
+
+    // Return a more helpful error message
+    const errorMsg = error.message || error;
+    if (errorMsg.includes('Chrome') || errorMsg.includes('Chromium')) {
+      throw new Error('PDF generation temporarily unavailable. Please try again or use HTML export instead.');
+    }
+    throw new Error(`PDF Generation Error: ${errorMsg}`);
   }
 }
 
