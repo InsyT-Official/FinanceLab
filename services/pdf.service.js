@@ -21,10 +21,7 @@ async function generatePDF(html) {
       ]
     };
 
-    // On Render, try to use system Chrome if available
-    if (process.env.NODE_ENV === 'production') {
-      launchOptions.executablePath = '/usr/bin/chromium-browser' || '/usr/bin/google-chrome';
-    }
+    // Puppeteer will automatically find the installed Chrome browser
 
     browser = await puppeteer.launch(launchOptions);
 
