@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+
+  <!-- Correct CSS path -->
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!-- Chart.js (served locally to avoid CDN tracking prevention) -->
+  <script src="/vendor/chart.js/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="header-content">
+      <h1>Finance Analysis Tool</h1>
+      <nav>
+        <a href="/">Dashboard</a>
+        <a href="/report/pdf">Export PDF</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <%- body %>
+  </main>
+
+  <!-- Dashboard JS -->
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>

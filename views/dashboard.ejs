@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/css/style.css" />
+
+  <!-- Chart.js (served locally to avoid CDN tracking prevention) -->
+  <script src="/vendor/chart.js/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <div class="app-layout">
+
+    <!-- ================= SIDEBAR ================= -->
+    <aside class="sidebar">
+
+      <h2 class="logo">FinanceLab</h2>
+
+      <div class="sidebar-meta">
+        <p class="company" id="sidebar-company-name">
+          <%= companyName || 'No Dataset Loaded' %>
+        </p>
+        <p class="period">Financial Intelligence System</p>
+      </div>
+
+      <nav class="sidebar-nav">
+
+        <button id="openDatasetBtn">📂 Open Dataset</button>
+
+        <!-- ===== FINANCIALS ===== -->
+        <div class="nav-section">
+          <h4>📊 Financials</h4>
+          <a href="#income">Income Statement</a>
+          <a href="#cashflow">Cash Flow</a>
+          <a href="#balance">Balance Sheet</a>
+        </div>
+
+        <!-- ===== ANALYSIS (expanded into analyst sections) ===== -->
+
+        <div class="nav-section collapsible">
+          <h4>🧾 Business Performance</h4>
+          <div class="sub-items" hidden>
+            <a href="#profitability" data-target="profitability">Profitability</a>
+            <a href="#efficiency" data-target="efficiency">Efficiency</a>
+            <a href="#operating-leverage" data-target="operating-leverage">Operating Leverage</a>
+          </div>
+        </div>
+
+        <div class="nav-section collapsible">
+          <h4>🏥 Financial Health</h4>
+          <div class="sub-items" hidden>
+            <a href="#working-capital" data-target="working-capital">Working Capital</a>
+            <a href="#capital-structure" data-target="capital-structure">Capital Structure</a>
+            
+          </div>
+        </div>
+
+       
+
+        
+
+        <!-- ===== REPORTS ===== -->
+        <div class="nav-section">
+          <h4>📄 Reports</h4>
+          <button id="downloadPdfBtn" class="report-btn">Download PDF</button>
+        </div>
+
+        <!-- AI Chat Button -->
+        <button id="aiChatBtn" class="ai-chat-button">AI Analysis</button>
+
+      </nav>
+    </aside>
+
+    <!-- ================= MAIN DASHBOARD ================= -->
+    <main class="dashboard">
+
+      <h2 id="dashboard-title">
+        <%= companyName ? companyName + ' – Financial Overview' : 'No Dataset Loaded' %>
+      </h2>
+
+      <!-- JS renders everything here -->
+      <div id="dashboard-content"></div>
+
+      <!-- ================= ANALYSIS SECTIONS ================= -->
+      <section id="working-capital" class="analysis-section">
+        <h2>Working Capital</h2>
+        <div class="analysis-content"></div>
+        <canvas id="working-capitalChart"></canvas>
+      </section>
+
+      <section id="profitability" class="analysis-section">
+        <h2>Profitability & ROIC</h2>
+        <div class="analysis-content"></div>
+        <canvas id="profitabilityChart"></canvas>
+      </section>
+
+      <section id="operating-leverage" class="analysis-section">
+        <h2>Operating Leverage</h2>
+        <div class="analysis-content"></div>
+        <canvas id="operating-leverageChart"></canvas>
+      </section>
+
+      <section id="capital-structure" class="analysis-section">
+        <h2>Capital Structure</h2>
+        <div class="analysis-content"></div>
+        <canvas id="capital-structureChart"></canvas>
+      </section>
+
+      <section id="efficiency" class="analysis-section">
+        <h2>Efficiency</h2>
+        <div class="analysis-content"></div>
+        <canvas id="efficiencyChart"></canvas>
+      </section>
+
+      <section id="valuation" class="analysis-section">
+        <h2>Valuation Lab</h2>
+        <div class="analysis-content"></div>
+        <canvas id="valuationChart"></canvas>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ================= AI CHAT POPUP (Modal Overlay) ================= -->
+  <div id="aiChatModal" class="chat-modal" hidden>
+    <div class="chat-container">
+      
+      <!-- Chat Header -->
+      <div class="chat-header">
+        <h3>🤖 Tobey, Financial AI Assistant</h3>
+        <button class="chat-close" id="closeChatBtn">✕</button>
+      </div>
+
+      <!-- Chat Messages Area -->
+      <div id="chatMessages" class="chat-messages">
+        <div class="chat-message ai-message">
+          <p>Hi! I'm Tobey, an AI assistant Oyama built for this Demo. I can analyze your business data, explain metrics, simulate scenarios, and provide strategic insights. What would you like to know?</p>
+        </div>
+      </div>
+
+      <!-- Chat Input Area -->
+      <div class="chat-input-area">
+        <input 
+          type="text" 
+          id="chatInput" 
+          class="chat-input" 
+          placeholder="Ask me anything... e.g., 'What's our net margin trend?' or 'Simulate 10% revenue growth'"
+          autocomplete="off"
+        />
+        <button id="chatSendBtn" class="chat-send-btn">Send</button>
+      </div>
+
+      <!-- Loading Indicator -->
+      <div id="chatLoading" class="chat-loading" hidden>
+        <span class="spinner"></span>
+        <p>Analyzing...</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= DATA BRIDGE ================= -->
+  <script>
+    window.financeData = <%- JSON.stringify(data || {
+      incomeStatement: [],
+      cashFlow: [],
+      balanceSheet: []
+    }) %>;
+
+    window.companyName = <%- JSON.stringify(companyName || null) %>;
+  </script>
+
+  <!-- Dashboard Logic -->
+ <script type="module" src="/js/dashboard.js"></script>
+
+</body>
+</html>

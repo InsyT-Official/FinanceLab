@@ -1,0 +1,13 @@
+Month,Cash_From_Operations,Cash_From_Investing,Cash_From_Financing,Net_Cash_Flow,Cash_Flow_Health
+January,-15000,-20000,50000,15000,Positive
+February,-20000,0,30000,10000,Positive
+March,10000,-15000,0,-5000,Negative
+April,30000,-25000,0,5000,Positive
+May,60000,-40000,0,20000,Positive
+June,120000,-60000,0,60000,Positive
+July,250000,-100000,0,150000,Positive
+August,300000,-120000,0,180000,Positive
+September,700000,-200000,-100000,400000,Positive
+October,750000,-150000,-100000,500000,Positive
+November,850000,-180000,-150000,520000,Positive
+December,900000,-200000,-200000,500000,Positive
