@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: financelab
+    env: node
+    plan: free
+    buildCommand: npm install && npx puppeteer browsers install chrome
+    startCommand: node app.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: GROQ_API_KEY
+        scope: build_and_runtime
