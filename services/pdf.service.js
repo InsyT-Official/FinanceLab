@@ -1,4 +1,5 @@
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
+const chromium = require('@sparticuz/chromium');
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -8,32 +9,21 @@ async function generatePDF(html) {
   let browser;
 
   try {
-    // Try launching with executable path first (for Render environment)
-    const launchOptions = {
-      headless: true,
-      defaultViewport: null,
-      product: 'chrome',
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-gpu',
-        '--disable-dev-shm-usage',
-        '--single-process=false'
-      ]
-    };
-
-    browser = await puppeteer.launch(launchOptions);
+    browser = await puppeteer.launch({
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(),
+      headless: chromium.headless
+    });
 
     const page = await browser.newPage();
 
-    await page.setViewport({ width: 1200, height: 1600 });
     await page.emulateMediaType('screen');
 
     await page.setContent(html, {
       waitUntil: ['load', 'domcontentloaded']
     });
 
-    // Version-safe wait
     await sleep(1500);
 
     const pdf = await page.pdf({
@@ -46,25 +36,18 @@ async function generatePDF(html) {
         bottom: '20px',
         left: '20px'
       },
-      scale: 1.2
+      scale: 1.1
     });
 
-    if (browser) {
-      await browser.close();
-    }
-
+    await browser.close();
     return pdf;
 
   } catch (error) {
     if (browser) {
-      try {
-        await browser.close();
-      } catch (e) {}
+      try { await browser.close(); } catch (_) {}
     }
 
-    // Return the actual error message for debugging
-    const errorMsg = error.message || error;
-    throw new Error(`PDF Generation Error: ${errorMsg}`);
+    throw new Error(`PDF Generation Error: ${error.message}`);
   }
 }
 
