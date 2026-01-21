@@ -12,6 +12,7 @@ async function generatePDF(html) {
     const launchOptions = {
       headless: true,
       defaultViewport: null,
+      product: 'chrome',
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
@@ -20,8 +21,6 @@ async function generatePDF(html) {
         '--single-process=false'
       ]
     };
-
-    // Puppeteer will automatically find the installed Chrome browser
 
     browser = await puppeteer.launch(launchOptions);
 
@@ -63,11 +62,8 @@ async function generatePDF(html) {
       } catch (e) {}
     }
 
-    // Return a more helpful error message
+    // Return the actual error message for debugging
     const errorMsg = error.message || error;
-    if (errorMsg.includes('Chrome') || errorMsg.includes('Chromium')) {
-      throw new Error('PDF generation temporarily unavailable. Please try again or use HTML export instead.');
-    }
     throw new Error(`PDF Generation Error: ${errorMsg}`);
   }
 }
