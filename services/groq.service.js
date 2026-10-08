@@ -20,7 +20,7 @@ async function validatePrompt(userInput) {
           content: userInput
         }
       ],
-      model: "meta-llama/llama-prompt-guard-2-86m",
+      model: "openai/gpt-oss-120b",
       temperature: 1,
       max_completion_tokens: 1,
       top_p: 1,
